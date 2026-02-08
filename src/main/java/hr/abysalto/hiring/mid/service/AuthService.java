@@ -9,6 +9,8 @@ import hr.abysalto.hiring.mid.dto.auth.UserResponse;
 import hr.abysalto.hiring.mid.exception.BadRequestException;
 import hr.abysalto.hiring.mid.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -73,5 +75,32 @@ public class AuthService {
 
         String token = jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
         return new AuthResponse(token);
+    }
+
+    public UserResponse me() {
+        Long userId = id();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName()
+        );
+    }
+
+    public static Long id() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) {
+            throw new BadRequestException("Unauthenticated");
+        }
+
+        try {
+            return Long.parseLong(auth.getPrincipal().toString());
+        } catch (NumberFormatException ex) {
+            throw new BadRequestException("Invalid authentication principal");
+        }
     }
 }
