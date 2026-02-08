@@ -3,8 +3,8 @@ package hr.abysalto.hiring.mid.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -22,20 +22,9 @@ public class User {
     private String email;
     private String password;
 
-    // Favorites
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_favorites",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private Set<Product> favorites = new HashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Cart> carts = new ArrayList<>();
 
-    public void addFavorite(Product product) {
-        favorites.add(product);
-    }
-
-    public void removeFavorite(Product product) {
-        favorites.remove(product);
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FavoriteProduct> favorites = new ArrayList<>();
 }

@@ -19,8 +19,7 @@ public class CartItem {
     @ManyToOne
     private Cart cart;
 
-    @ManyToOne
-    private Product product;
+    private Long productId; // Product ID from API
 
     private int quantity;
 }
