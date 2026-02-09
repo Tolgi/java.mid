@@ -32,3 +32,10 @@ app:
     secret: "b7F!x9Q2#zL4@pR8$wT6^sV0*eN1%uK5&yM3"
     issuer: "abysaltO"
     access-token-ttl-minutes: 60
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
